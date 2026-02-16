@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "eslint.config.js",
   "scripts": {
-    "test": "echo \"No Test\""
+    "start": "node server.js",
+    "pretest": "eslint . --ext .js",
+    "test": "echo \"Running tests...\""
   },
   "repository": {
     "type": "git",

@@ -30,6 +30,9 @@ const users = {};
 const getUsersGET = (request, response) => {
     const responseJSON = { users };
 
+    console.log("getUsersGET called");
+    console.log(JSON.stringify(responseJSON));
+
     response.writeHead(200, {'Content-Type' : 'application/json'});
     response.write(JSON.stringify(responseJSON));
     response.end();

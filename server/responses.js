@@ -19,3 +19,13 @@ const handlePOST = (pathname, req, res) => {
 
     return notFoundGET(req, res);
 }
+
+//get users json and no body
+
+//get not real
+
+//head not real
+
+//post add user
+
+//404 error page

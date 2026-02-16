@@ -15,5 +15,10 @@
     "url": "https://github.com/EmmaD9/http-api-assignment-ii/issues"
   },
   "homepage": "https://github.com/EmmaD9/http-api-assignment-ii#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.0",
+    "globals": "^17.3.0"
+  }
 }

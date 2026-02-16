@@ -22,12 +22,6 @@
         default: content.innerHTML = `Updated (No Content).`; break;
       }
 
-      //HEAD responses shouldn't have a body
-      if (!shouldParse) {
-        content.innerHTML += '<p>Meta Data Received</p>';
-        return;
-      }
-
       //parse the JSON body
       const obj = await response.json();
       let jsonString = JSON.stringify(obj);
@@ -73,7 +67,13 @@
 
       if (method === 'HEAD') {
         const content = document.querySelector('#content');
-        content.innerHTML = `<b>Status: ${response.status}</b>`;
+        switch (response.status) {
+          case 200: content.innerHTML = `<b>Success</b>`; break;
+          case 201: content.innerHTML = `<b>Created</b>`; break;
+          case 400: content.innerHTML = `<b>Bad Request</b>`; break;
+          case 404: content.innerHTML = `<b>Not Found</b>`; break;
+          default: content.innerHTML = `Updated (No Content).`; break;
+        }
         return;
       }
 

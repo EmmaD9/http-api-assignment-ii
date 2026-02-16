@@ -30,7 +30,7 @@
 
       //parse the JSON body
       const obj = await response.json();
-      let jsonString = JSON.stringify(obj, null, 2);
+      let jsonString = JSON.stringify(obj);
       content.innerHTML += `<p>${jsonString}</p>`;
     };
 

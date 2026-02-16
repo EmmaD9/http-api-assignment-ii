@@ -56,7 +56,46 @@ const notRealHEAD = (req, res) =>{
     response.end();
 }
 
-//TODO: post add user
+const addUserPOST = (req, res) => {
+    let body = '';
+
+    req.on('data', (chunk) => {
+        body += chunk;
+    });
+
+    req.on('end', () => {
+        const parsed = JSON.parse(body);
+        const { name, age } = parsed;
+
+        if (!name || !age) {
+            const responseJSON = {
+                message: 'Name and age are both required.',
+                id: 'missingParams',
+            };
+
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.write(JSON.stringify(responseJSON));
+            return res.end();
+        }
+
+        const userExists = users[name];
+
+        if (userExists) {
+            users[name].age = age;
+
+            res.writeHead(204, { 'Content-Type': 'application/json' });
+            return res.end();
+        }
+
+        users[name] = { age };
+
+        const responseJSON = { message: 'Created Successfully' };
+
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.write(JSON.stringify(responseJSON));
+        return res.end();
+    });
+};
 
 //GET 404 error page with JSON
 const notFoundGET = (request, response) => {

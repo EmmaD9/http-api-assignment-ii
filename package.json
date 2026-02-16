@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "eslint.config.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server/server.js",
     "pretest": "eslint . --ext .js",
     "test": "echo \"Running tests...\""
   },

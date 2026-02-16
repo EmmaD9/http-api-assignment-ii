@@ -26,6 +26,17 @@ const onRequest = (request, response) => {
 
     const {pathname} = parsedUrl;
 
+    //method and path routes
+    if(request.method === 'GET'){
+        dataResponses.handleGET(pathname, request, response);
+    } else if (request.method === 'HEAD'){
+        dataResponses.handleHEAD(pathname, request, response);
+    } else if (request.method === 'POST'){
+        dataResponses.handlePOST(pathname, request, response);
+    } else {
+    dataResponses.notFoundGET(request, response);
+    }
+
 };
 
 http.createServer(onRequest).listen(port, () => {

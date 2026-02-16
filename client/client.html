@@ -8,87 +8,105 @@
   <!--referenced script from body-parse-example -->
   <script>
 
-  const content = document.querySelector('#content');
-    //async to hadnle fetch response
-     const handleResponse = async (response, parseResponse) => {
-        switch (response.status) {
-          case 200: content.innerHTML = `<b>Success</b>`; break;
-          case 201: content.innerHTML = `<b>Created</b>`; break;
-          case 400: content.innerHTML = `<b>Bad Request</b>`; break;
-          case 404: content.innerHTML = `<b>Resource Not Found</b>`; break;
-          default: content.innerHTML = `Error code not implemented by client.`; break;
-        }
 
-        if (parseResponse) {
-          const obj = await response.json();
-          content.innerHTML += `<p>${JSON.stringify(obj)}</p>`;
-        } else {
-          content.innerHTML += '<p>Meta Data Received</p>';
-        }
-      };
+    //async to handle fetch response
+    const handleResponse = async (response, shouldParse) => {
+      const content = document.querySelector('#content');
 
+      //Set the status message
+      switch (response.status) {
+        case 200: content.innerHTML = `<b>Success</b>`; break;
+        case 201: content.innerHTML = `<b>Created</b>`; break;
+        case 400: content.innerHTML = `<b>Bad Request</b>`; break;
+        case 404: content.innerHTML = `<b>Not Found</b>`; break;
+        default: content.innerHTML = `Updated (No Content).`; break;
+      }
 
-    const sendPost = async (nameForm) => {
-      const url = nameForm.getAttribute('action');
-      const method = nameForm.getAttribute('method');
+      //HEAD responses shouldn't have a body
+      if (!shouldParse) {
+        content.innerHTML += '<p>Meta Data Received</p>';
+        return;
+      }
 
-      const name = nameForm.querySelector('#nameField').value;
-      const age = nameForm.querySelector('#ageField').value;
-      //const dataType = nameForm.querySelector('#dataType').value;
+      //parse the JSON body
+      const obj = await response.json();
+      let jsonString = JSON.stringify(obj, null, 2);
+      content.innerHTML += `<p>${jsonString}</p>`;
+    };
 
-      //Build a data string in the FORM-URLENCODED format.
-      let formData = `name=${name}&age=${age}`;
+    //POST for adding a user
+    const sendPost = async (form) => {
+      //"/addUser"
+      const url = form.getAttribute('action');
+      //"post"
+      const method = form.getAttribute('method');
+
+      const name = form.querySelector('#nameField').value;
+      const age = form.querySelector('#ageField').value;
+
+      const body = JSON.stringify({ name, age });
 
       const response = await fetch(url, {
-        method: method,
+        method,
         headers: {
-          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        body: formData,
+        body
       });
 
-      //Once we have a response, handle it.
+      handleResponse(response, true);
+    };
+
+    //GET or HEAD
+    const sendGetOrHead = async (form) => {
+      //"/getUsers" or "/notReal"
+      const url = form.getAttribute('action');
+
+      //GET or HEAD
+      const method = form.getAttribute('method').toUpperCase();
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (method === 'HEAD') {
+        const content = document.querySelector('#content');
+        content.innerHTML = `<b>Status: ${response.status}</b>`;
+        return;
+      }
+
       handleResponse(response, true);
     };
 
 
-    //I added and updat ed the get/head form:
+    //Initialize forms
     const init = () => {
-      // POST form
       const nameForm = document.querySelector('#nameForm');
-      const addUser = (e) => {
+      nameForm.addEventListener('submit', (e) => {
         e.preventDefault();
         sendPost(nameForm);
-        return false;
-      };
-      nameForm.addEventListener('submit', addUser);
+      });
 
-      // GET/HEAD form
       const userForm = document.querySelector('#userForm');
-      const getUser = async (e) => {
+      userForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const url = document.querySelector('#urlField').value;
+        //Override method based on dropdown
         const method = document.querySelector('#methodSelect').value.toUpperCase();
+        userForm.setAttribute('method', method);
 
-        const response = await fetch(url, {
-          method,
-          headers: { 'Accept': 'application/json' }
-        });
+        //Override action based on dropdown
+        const url = document.querySelector('#urlField').value;
+        userForm.setAttribute('action', url);
 
-        if (method === 'HEAD') {
-          content.innerHTML = `<b>Status: ${response.status}</b>`;
-          return;
-        }
-
-        handleResponse(response, true);
-      };
-
-      userForm.addEventListener('submit', getUser);
+        sendGetOrHead(userForm);
+      });
     };
 
-    //When the window loads, run init.
     window.onload = init;
+
   </script>
 
 </head>

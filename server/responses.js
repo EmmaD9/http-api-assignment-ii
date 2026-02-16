@@ -1,8 +1,11 @@
+const htmlResponses = require('./htmlResponses.js');
+//const dataResponses = require('./responses.js');
+
 const handleGET = (pathname, request, response) => {
-    if(pathname = '/getUsers') return getUsersGET(request, response);
-    if (pathname = '/notReal') return notRealGET(request, response);
-    if (pathname = '/') return htmlResponses.getIndex(request, response);
-    if (pathname = '/style.css') return htmlResponses.getCss(request, response);
+    if(pathname === '/getUsers') return getUsersGET(request, response);
+    if (pathname === '/notReal') return notRealGET(request, response);
+    if (pathname === '/') return htmlResponses.getIndex(request, response);
+    if (pathname === '/style.css') return htmlResponses.getCss(request, response);
 
     return notFoundGET(request, response);
 };
@@ -51,19 +54,19 @@ const notRealGET = (request, response) => {
 };
 
 //head not real
-const notRealHEAD = (req, res) =>{
+const notRealHEAD = (request, response) =>{
     response.writeHead(404, {'Content-Type': 'application/json'});
     response.end();
 }
 
-const addUserPOST = (req, res) => {
+const addUserPOST = (request, response) => {
     let body = '';
 
-    req.on('data', (chunk) => {
+    request.on('data', (chunk) => {
         body += chunk;
     });
 
-    req.on('end', () => {
+    request.on('end', () => {
         const parsed = JSON.parse(body);
         const { name, age } = parsed;
 
@@ -73,9 +76,9 @@ const addUserPOST = (req, res) => {
                 id: 'missingParams',
             };
 
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.write(JSON.stringify(responseJSON));
-            return res.end();
+            response.writeHead(400, { 'Content-Type': 'application/json' });
+            response.write(JSON.stringify(responseJSON));
+            return response.end();
         }
 
         const userExists = users[name];
@@ -83,17 +86,17 @@ const addUserPOST = (req, res) => {
         if (userExists) {
             users[name].age = age;
 
-            res.writeHead(204, { 'Content-Type': 'application/json' });
-            return res.end();
+            response.writeHead(204, { 'Content-Type': 'application/json' });
+            return response.end();
         }
 
         users[name] = { age };
 
         const responseJSON = { message: 'Created Successfully' };
 
-        res.writeHead(201, { 'Content-Type': 'application/json' });
-        res.write(JSON.stringify(responseJSON));
-        return res.end();
+        response.writeHead(201, { 'Content-Type': 'application/json' });
+        response.write(JSON.stringify(responseJSON));
+        return response.end();
     });
 };
 
@@ -110,7 +113,7 @@ const notFoundGET = (request, response) => {
 }
 
 //HEAD 404 version with no body
-const notFoundHead = (request, response) => {
+const notFoundHEAD = (request, response) => {
     response.writeHead(404, {'Content-Type': 'application/json' });
     response.end();
 };
@@ -125,5 +128,5 @@ module.exports = {
     notRealHEAD,
     addUserPOST,
     notFoundGET,
-    notFoundHead
+    notFoundHEAD
 }

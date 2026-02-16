@@ -114,3 +114,16 @@ const notFoundHead = (request, response) => {
     response.writeHead(404, {'Content-Type': 'application/json' });
     response.end();
 };
+
+module.exports = {
+    handleGET,
+    handleHEAD,
+    handlePOST,
+    getUsersGET,
+    getUsersHEAD,
+    notRealGET,
+    notRealHEAD,
+    addUserPOST,
+    notFoundGET,
+    notFoundHead
+}

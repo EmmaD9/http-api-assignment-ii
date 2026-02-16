@@ -39,19 +39,9 @@
       //Build a data string in the FORM-URLENCODED format.
       let formData = `name=${name}&age=${age}`;
 
-      //If the user selected JSON, send that instead
-      //if (dataType === 'application/json') {
-     //   formData = JSON.stringify({ name, age });
-     // }
-
-      //Make a fetch request and await a response. Set the method to
-      //the one provided by the form (POST). Set the headers. Content-Type
-      //is the type of data we are sending. Accept is the data we would like
-      //in response. Then add our FORM-URLENCODED string as the body of the request.
       const response = await fetch(url, {
         method: method,
         headers: {
-          
           'Accept': 'application/json',
         },
         body: formData,
@@ -62,7 +52,7 @@
     };
 
 
-    //I added and upaded the get/head form:
+    //I added and updat ed the get/head form:
     const init = () => {
       // POST form
       const nameForm = document.querySelector('#nameForm');
